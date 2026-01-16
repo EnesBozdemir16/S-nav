@@ -1,0 +1,2206 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Google Ads Optimizasyon ve Tablo Genişletme</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    <style>
+        :root {
+            --primary-color: #4285F4;
+            --secondary-color: #34A853;
+            --danger-color: #EA4335;
+            --warning-color: #FBBC05;
+            --light-color: #f8f9fa;
+            --dark-color: #343a40;
+            --border-radius: 8px;
+            --box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: #f5f7fa;
+            color: #333;
+            line-height: 1.6;
+            padding: 20px;
+            max-width: 1600px;
+            margin: 0 auto;
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding: 20px;
+            background: linear-gradient(135deg, var(--primary-color), #5C6BC0);
+            color: white;
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+        }
+        
+        .header h1 {
+            font-size: 2.2rem;
+            margin-bottom: 10px;
+        }
+        
+        .header p {
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+        
+        .card {
+            background-color: white;
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+            padding: 25px;
+            margin-bottom: 30px;
+        }
+        
+        .card-title {
+            font-size: 1.4rem;
+            color: var(--primary-color);
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #f0f0f0;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .card-title i {
+            color: var(--secondary-color);
+        }
+        
+        .file-upload {
+            border: 2px dashed #ccc;
+            border-radius: var(--border-radius);
+            padding: 40px;
+            text-align: center;
+            margin-bottom: 20px;
+            transition: all 0.3s;
+            cursor: pointer;
+        }
+        
+        .file-upload:hover {
+            border-color: var(--primary-color);
+            background-color: #f8f9fa;
+        }
+        
+        .file-upload i {
+            font-size: 3rem;
+            color: var(--primary-color);
+            margin-bottom: 15px;
+        }
+        
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: var(--border-radius);
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+        
+        .btn-primary {
+            background-color: var(--primary-color);
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background-color: #3367d6;
+        }
+        
+        .btn-success {
+            background-color: var(--secondary-color);
+            color: white;
+        }
+        
+        .btn-success:hover {
+            background-color: #2c8c47;
+        }
+        
+        .btn-warning {
+            background-color: var(--warning-color);
+            color: #333;
+        }
+        
+        .btn-warning:hover {
+            background-color: #e6a700;
+        }
+        
+        .btn-danger {
+            background-color: var(--danger-color);
+            color: white;
+        }
+        
+        .btn-danger:hover {
+            background-color: #d32f2f;
+        }
+        
+        .table-container {
+            overflow-x: auto;
+            margin-top: 20px;
+            border: 1px solid #e0e0e0;
+            border-radius: var(--border-radius);
+            max-height: 600px;
+            overflow-y: auto;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 0;
+        }
+        
+        th {
+            background-color: var(--primary-color);
+            color: white;
+            text-align: left;
+            padding: 12px 15px;
+            font-weight: 600;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+        
+        td {
+            padding: 12px 15px;
+            border-bottom: 1px solid #eee;
+        }
+        
+        tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+        
+        tr:hover {
+            background-color: #f0f7ff;
+        }
+        
+        .results-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 15px;
+            margin-top: 25px;
+        }
+        
+        .result-box {
+            background-color: white;
+            border-radius: var(--border-radius);
+            padding: 20px;
+            box-shadow: var(--box-shadow);
+            border-left: 5px solid var(--primary-color);
+        }
+        
+        .result-box h3 {
+            margin-bottom: 15px;
+            color: var(--primary-color);
+            font-size: 1.1rem;
+        }
+        
+        .result-value {
+            font-size: 1.6rem;
+            font-weight: 700;
+            color: var(--secondary-color);
+        }
+        
+        .result-label {
+            font-size: 0.85rem;
+            color: #777;
+            margin-top: 5px;
+        }
+        
+        .alert {
+            padding: 15px;
+            border-radius: var(--border-radius);
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .alert-warning {
+            background-color: #fff3cd;
+            color: #856404;
+            border-left: 5px solid var(--warning-color);
+        }
+        
+        .alert-info {
+            background-color: #d1ecf1;
+            color: #0c5460;
+            border-left: 5px solid var(--primary-color);
+        }
+        
+        .alert-success {
+            background-color: #d4edda;
+            color: #155724;
+            border-left: 5px solid var(--secondary-color);
+        }
+        
+        .label-result {
+            background-color: #f8f9fa;
+            border-radius: var(--border-radius);
+            padding: 20px;
+            margin-bottom: 20px;
+            border-left: 5px solid var(--secondary-color);
+        }
+        
+        .label-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .label-name {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: var(--primary-color);
+        }
+        
+        .label-stats {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+        
+        .stat-item {
+            text-align: center;
+            min-width: 90px;
+        }
+        
+        .stat-value {
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: var(--primary-color);
+        }
+        
+        .stat-label {
+            font-size: 0.8rem;
+            color: #777;
+        }
+        
+        .campaign-india {
+            background-color: #fff8e1 !important;
+        }
+        
+        .highlight {
+            background-color: #fffde7 !important;
+            font-weight: 600;
+        }
+        
+        .metric-badge {
+            display: inline-block;
+            padding: 3px 8px;
+            border-radius: 15px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            margin-left: 6px;
+        }
+        
+        .badge-success {
+            background-color: #d4edda;
+            color: #155724;
+        }
+        
+        .badge-warning {
+            background-color: #fff3cd;
+            color: #856404;
+        }
+        
+        .badge-danger {
+            background-color: #f8d7da;
+            color: #721c24;
+        }
+        
+        .badge-info {
+            background-color: #d1ecf1;
+            color: #0c5460;
+        }
+        
+        .file-info {
+            background-color: #e8f4fd;
+            border-radius: var(--border-radius);
+            padding: 15px;
+            margin-top: 20px;
+            font-size: 0.9rem;
+        }
+        
+        .actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 10px;
+            flex-wrap: wrap;
+        }
+        
+        .hidden {
+            display: none;
+        }
+        
+        .loading {
+            text-align: center;
+            padding: 40px;
+        }
+        
+        .loading i {
+            font-size: 2rem;
+            color: var(--primary-color);
+            margin-bottom: 10px;
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background-color: #e0e0e0;
+            border-radius: 4px;
+            margin-top: 10px;
+            overflow: hidden;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background-color: var(--primary-color);
+            transition: width 0.3s ease;
+        }
+        
+        .warning-text {
+            color: var(--danger-color);
+            font-weight: bold;
+        }
+        
+        .new-column {
+            background-color: #e8f5e9 !important;
+            font-weight: 600;
+        }
+        
+        .india-highlight {
+            background-color: #fff3e0 !important;
+        }
+        
+        .sticky-header {
+            position: sticky;
+            top: 0;
+            background-color: white;
+            z-index: 100;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            padding: 15px;
+            margin-bottom: 15px;
+            border-radius: var(--border-radius);
+        }
+        
+        .summary-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+        
+        .summary-card {
+            background-color: white;
+            border-radius: var(--border-radius);
+            padding: 15px;
+            box-shadow: var(--box-shadow);
+        }
+        
+        .summary-card h4 {
+            margin-bottom: 10px;
+            color: var(--primary-color);
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        .summary-value {
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: var(--dark-color);
+        }
+        
+        .summary-label {
+            font-size: 0.8rem;
+            color: #777;
+            margin-top: 5px;
+        }
+        
+        .tab-container {
+            display: flex;
+            border-bottom: 1px solid #e0e0e0;
+            margin-bottom: 20px;
+        }
+        
+        .tab {
+            padding: 12px 24px;
+            background: none;
+            border: none;
+            border-bottom: 3px solid transparent;
+            cursor: pointer;
+            font-weight: 600;
+            color: #666;
+            transition: all 0.3s;
+        }
+        
+        .tab:hover {
+            color: var(--primary-color);
+        }
+        
+        .tab.active {
+            color: var(--primary-color);
+            border-bottom-color: var(--primary-color);
+        }
+        
+        .tab-content {
+            display: none;
+        }
+        
+        .tab-content.active {
+            display: block;
+        }
+        
+        .toggle-switch {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin: 15px 0;
+        }
+        
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 50px;
+            height: 24px;
+        }
+        
+        .switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+        
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            transition: .4s;
+            border-radius: 24px;
+        }
+        
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 16px;
+            width: 16px;
+            left: 4px;
+            bottom: 4px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+        }
+        
+        input:checked + .slider {
+            background-color: var(--primary-color);
+        }
+        
+        input:checked + .slider:before {
+            transform: translateX(26px);
+        }
+        
+        .column-info {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-top: 15px;
+            padding: 15px;
+            background-color: #f8f9fa;
+            border-radius: var(--border-radius);
+        }
+        
+        .column-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .column-color {
+            width: 20px;
+            height: 20px;
+            border-radius: 4px;
+        }
+        
+        .filters {
+            background-color: #f8f9fa;
+            border-radius: var(--border-radius);
+            padding: 15px;
+            margin-bottom: 20px;
+        }
+        
+        .filter-group {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+        
+        .filter-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .filter-item select,
+        .filter-item input {
+            padding: 8px 12px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            background-color: white;
+        }
+        
+        .status-indicator {
+            display: inline-block;
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            margin-right: 5px;
+        }
+        
+        .status-indicator.success {
+            background-color: var(--secondary-color);
+        }
+        
+        .status-indicator.warning {
+            background-color: var(--warning-color);
+        }
+        
+        .status-indicator.danger {
+            background-color: var(--danger-color);
+        }
+        
+        .sr-only {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            white-space: nowrap;
+            border: 0;
+        }
+        
+        .search-icon {
+            color: #666;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Başlık Bölümü -->
+        <header class="header">
+            <h1><i class="fas fa-chart-line"></i> Google Ads Optimizasyon ve Tablo Genişletme</h1>
+            <p>Excel/CSV dosyasını yükleyin, optimizasyon hesaplayın ve tabloya yeni sütunlar ekleyin</p>
+        </header>
+        
+        <!-- Ana İçerik -->
+        <div class="card">
+            <div class="tab-container">
+                <button class="tab active" data-tab="upload">
+                    <span aria-hidden="true">📁</span> Dosya Yükle
+                </button>
+                <button class="tab" data-tab="table">
+                    <span aria-hidden="true">📊</span> Tablo Görünümü
+                </button>
+                <button class="tab" data-tab="analysis">
+                    <span aria-hidden="true">📈</span> Analiz
+                </button>
+            </div>
+            
+            <!-- Dosya Yükleme Sekmesi -->
+            <div id="upload" class="tab-content active">
+                <h2 class="card-title"><i class="fas fa-upload"></i> Excel/CSV Dosyası Yükle</h2>
+                
+                <div class="alert alert-info">
+                    <i class="fas fa-info-circle"></i>
+                    <div>
+                        <strong>Optimizasyon Kuralları:</strong><br>
+                        1. Hedef CPA ±%15 tolerans<br>
+                        2. Bütçe tam kullanımı ±%15 tolerans<br>
+                        3. <span class="warning-text">Hindistan kampanyaları maksimum %30 bütçe</span>
+                    </div>
+                </div>
+                
+                <div class="file-upload" id="fileUploadArea">
+                    <i class="fas fa-cloud-upload-alt"></i>
+                    <h3>Dosyayı sürükleyip bırakın veya tıklayarak seçin</h3>
+                    <p>CSV veya Excel formatında dosya yükleyin (.csv, .xlsx, .xls)</p>
+                    <input type="file" id="fileInput" accept=".csv,.xlsx,.xls" style="display: none;">
+                    <button class="btn btn-primary" id="selectFileBtn">
+                        <i class="fas fa-folder-open"></i> Dosya Seç
+                    </button>
+                </div>
+                
+                <div class="file-info" id="fileInfo" style="display: none;">
+                    <div id="fileName"><strong>Dosya:</strong> <span id="fileNameText"></span></div>
+                    <div id="fileSize"><strong>Boyut:</strong> <span id="fileSizeText"></span></div>
+                    <div id="labelsCount"><strong>Label Sayısı:</strong> <span id="labelsCountText"></span></div>
+                    <div id="campaignsCount"><strong>Kampanya Sayısı:</strong> <span id="campaignsCountText"></span></div>
+                    <div id="indiaCount"><strong>Hindistan Kampanyası:</strong> <span id="indiaCountText"></span></div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="progressFill" style="width: 0%;"></div>
+                    </div>
+                </div>
+                
+                <div class="actions">
+                    <button class="btn btn-success" id="calculateBtn" disabled>
+                        <i class="fas fa-calculator"></i> Hesapla ve Tabloya Ekle
+                    </button>
+                    <button class="btn btn-warning" id="previewBtn" disabled>
+                        <i class="fas fa-eye"></i> Önizleme
+                    </button>
+                    <button class="btn btn-danger" id="resetBtn">
+                        <i class="fas fa-redo"></i> Sıfırla
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Tablo Görünümü Sekmesi -->
+            <div id="table" class="tab-content">
+                <div class="sticky-header">
+                    <div class="actions">
+                        <button class="btn btn-primary" id="downloadBtn">
+                            <i class="fas fa-download"></i> Güncel Tabloyu İndir
+                        </button>
+                        <button class="btn btn-warning" id="exportExcelBtn">
+                            <i class="fas fa-file-excel"></i> Excel Olarak Kaydet
+                        </button>
+                        <button class="btn btn-success" id="exportOriginalFormatBtn">
+                            <i class="fas fa-file-excel"></i> Orijinal Formatta İndir
+                        </button>
+                        <button class="btn btn-danger" id="clearTableBtn">
+                            <i class="fas fa-trash"></i> Temizle
+                        </button>
+                    </div>
+                    
+                    <div class="summary-grid" id="tableSummary">
+                        <!-- Tablo özeti buraya eklenecek -->
+                    </div>
+                    
+                    <div class="column-info">
+                        <div class="column-item">
+                            <div class="column-color" style="background-color: #fff3e0;"></div>
+                            <span>Hindistan Kampanyası</span>
+                        </div>
+                        <div class="column-item">
+                            <div class="column-color" style="background-color: #e8f5e9;"></div>
+                            <span>Yeni Eklenen Sütunlar</span>
+                        </div>
+                        <div class="column-item">
+                            <div class="column-color" style="background-color: #f0f7ff;"></div>
+                            <span>CPA Hedefi Üzerinde</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="filters">
+                    <div class="filter-group">
+                        <div class="filter-item">
+                            <div class="search-icon">
+                                <i class="fas fa-search" aria-hidden="true"></i>
+                            </div>
+                            <input type="text" id="searchInput" placeholder="Kampanya adı ara...">
+                        </div>
+                        <div class="filter-item">
+                            <label for="labelFilter">Label:</label>
+                            <select id="labelFilter">
+                                <option value="">Tümü</option>
+                            </select>
+                        </div>
+                        <div class="filter-item">
+                            <label for="indiaFilter">Hindistan:</label>
+                            <select id="indiaFilter">
+                                <option value="">Tümü</option>
+                                <option value="true">Sadece Hindistan</option>
+                                <option value="false">Hindistan Hariç</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="table-container">
+                    <table id="extendedTable">
+                        <caption class="sr-only">Optimize edilmiş kampanya verileri tablosu</caption>
+                        <thead id="extendedTableHeader">
+                            <tr>
+                                <th scope="col" colspan="10">Veriler yükleniyor...</th>
+                            </tr>
+                        </thead>
+                        <tbody id="extendedTableBody">
+                            <!-- Tablo verileri dinamik olarak eklenecek -->
+                        </tbody>
+                    </table>
+                </div>
+                
+                <div class="results-container" id="tableStats">
+                    <!-- Tablo istatistikleri buraya eklenecek -->
+                </div>
+            </div>
+            
+            <!-- Analiz Sekmesi -->
+            <div id="analysis" class="tab-content">
+                <h2 class="card-title"><i class="fas fa-chart-bar"></i> Detaylı Analiz</h2>
+                
+                <div class="alert alert-success">
+                    <i class="fas fa-lightbulb"></i>
+                    <div>
+                        <strong>Optimizasyon Sonuçları Özeti</strong><br>
+                        Aşağıda her label için detaylı optimizasyon sonuçları görüntülenmektedir.
+                    </div>
+                </div>
+                
+                <div class="toggle-switch">
+                    <span>Detaylı Görünüm:</span>
+                    <label class="switch">
+                        <input type="checkbox" id="detailedViewToggle">
+                        <span class="slider"></span>
+                    </label>
+                </div>
+                
+                <div id="analysisResults">
+                    <!-- Analiz sonuçları buraya eklenecek -->
+                </div>
+                
+                <div class="file-info" style="margin-top: 30px;">
+                    <h4><i class="fas fa-history"></i> İşlem Geçmişi</h4>
+                    <div id="processHistory">
+                        <!-- İşlem geçmişi buraya eklenecek -->
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Yükleme Animasyonu -->
+        <div class="card loading hidden" id="loadingSection">
+            <i class="fas fa-spinner"></i>
+            <h3>Dosya işleniyor...</h3>
+            <p>Veriler analiz ediliyor, lütfen bekleyin.</p>
+            <div class="progress-bar" style="width: 50%; margin: 20px auto;">
+                <div class="progress-fill" id="loadingProgress" style="width: 30%;"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Uygulama durumu ve ayarları
+        const state = {
+            originalData: [],
+            headers: [],
+            labels: [],
+            campaigns: [],
+            results: [],
+            fileName: '',
+            fileSize: 0,
+            extendedTableData: [],
+            settings: {
+                cpaTolerance: 15,      // %15 sabit
+                budgetTolerance: 15,   // %15 sabit
+                indiaLimit: 30,        // %30 sabit
+                minBudget: 5,          // 5 birim sabit
+                daysRemaining: 15      // 15 gün sabit
+            },
+            processHistory: [],
+            currentTab: 'upload',
+            filteredData: []
+        };
+
+        // DOM elementleri
+        const elements = {
+            // Sekmeler
+            tabs: document.querySelectorAll('.tab'),
+            tabContents: document.querySelectorAll('.tab-content'),
+            
+            // Dosya yükleme
+            fileUploadArea: document.getElementById('fileUploadArea'),
+            fileInput: document.getElementById('fileInput'),
+            selectFileBtn: document.getElementById('selectFileBtn'),
+            
+            // Butonlar
+            calculateBtn: document.getElementById('calculateBtn'),
+            previewBtn: document.getElementById('previewBtn'),
+            resetBtn: document.getElementById('resetBtn'),
+            downloadBtn: document.getElementById('downloadBtn'),
+            exportExcelBtn: document.getElementById('exportExcelBtn'),
+            exportOriginalFormatBtn: document.getElementById('exportOriginalFormatBtn'),
+            clearTableBtn: document.getElementById('clearTableBtn'),
+            
+            // Dosya bilgisi
+            fileInfo: document.getElementById('fileInfo'),
+            fileNameText: document.getElementById('fileNameText'),
+            fileSizeText: document.getElementById('fileSizeText'),
+            labelsCountText: document.getElementById('labelsCountText'),
+            campaignsCountText: document.getElementById('campaignsCountText'),
+            indiaCountText: document.getElementById('indiaCountText'),
+            progressFill: document.getElementById('progressFill'),
+            
+            // Yükleme
+            loadingSection: document.getElementById('loadingSection'),
+            loadingProgress: document.getElementById('loadingProgress'),
+            
+            // Tablo
+            extendedTableHeader: document.getElementById('extendedTableHeader'),
+            extendedTableBody: document.getElementById('extendedTableBody'),
+            tableSummary: document.getElementById('tableSummary'),
+            tableStats: document.getElementById('tableStats'),
+            
+            // Analiz
+            detailedViewToggle: document.getElementById('detailedViewToggle'),
+            analysisResults: document.getElementById('analysisResults'),
+            processHistory: document.getElementById('processHistory'),
+            
+            // Filtreler
+            searchInput: document.getElementById('searchInput'),
+            labelFilter: document.getElementById('labelFilter'),
+            indiaFilter: document.getElementById('indiaFilter')
+        };
+
+        // Yardımcı fonksiyonlar
+        function formatNumber(num) {
+            if (num === 0 || !num) return '0';
+            if (num < 0.01) return num.toExponential(2);
+            if (num < 1) return num.toFixed(3);
+            if (num < 10) return num.toFixed(2);
+            if (num < 1000) return num.toFixed(1);
+            return Math.round(num).toLocaleString('tr-TR');
+        }
+
+        function formatCurrency(num) {
+            return new Intl.NumberFormat('tr-TR', {
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2
+            }).format(num);
+        }
+
+        function formatFileSize(bytes) {
+            if (bytes === 0) return '0 Bytes';
+            const k = 1024;
+            const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+            const i = Math.floor(Math.log(bytes) / Math.log(k));
+            return Number.parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+        }
+
+        function getStatusColor(status) {
+            switch(status) {
+                case 'optimal': return '#34A853';
+                case 'warning': return '#FBBC05';
+                case 'danger': return '#EA4335';
+                default: return '#777';
+            }
+        }
+
+        function getCPAStatus(currentCPA, targetCPA) {
+            if (currentCPA > targetCPA) return 'warning';
+            if (currentCPA < targetCPA * 0.9) return 'success';
+            return 'optimal';
+        }
+
+        function getBudgetStatus(budgetUsage) {
+            if (budgetUsage > 90) return 'success';
+            if (budgetUsage < 50) return 'warning';
+            return 'optimal';
+        }
+
+        function cleanCellValue(cell) {
+            if (cell === null || cell === undefined) return '';
+            const trimmedCell = cell.toString().trim();
+            const firstChar = trimmedCell.charAt(0);
+            const lastChar = trimmedCell.charAt(trimmedCell.length - 1);
+            const isQuoted = (firstChar === '"' && lastChar === '"') || 
+                            (firstChar === "'" && lastChar === "'");
+            
+            if (isQuoted && trimmedCell.length > 1) {
+                return trimmedCell.substring(1, trimmedCell.length - 1);
+            }
+            return trimmedCell;
+        }
+
+        function parseCSVLine(inputLine) {
+            if (!inputLine || inputLine.trim() === '') return [];
+            
+            const cells = [];
+            let currentCell = '';
+            let inQuotes = false;
+            let quoteChar = '';
+            
+            for (let i = 0; i < inputLine.length; i++) {
+                const char = inputLine[i];
+                
+                if ((char === '"' || char === "'") && !inQuotes) {
+                    inQuotes = true;
+                    quoteChar = char;
+                    continue;
+                }
+                
+                if (inQuotes && char === quoteChar) {
+                    inQuotes = false;
+                    continue;
+                }
+                
+                if (char === ',' && !inQuotes) {
+                    cells.push(currentCell);
+                    currentCell = '';
+                    continue;
+                }
+                
+                currentCell += char;
+            }
+            
+            cells.push(currentCell);
+            return cells.map(cleanCellValue);
+        }
+
+        // Verileri işle
+        function extractNumber(value) {
+            if (value === undefined || value === null || value === '') return 0;
+            if (typeof value === 'number') return value;
+            if (typeof value === 'string') {
+                // Excel formüllerini kontrol et (örnek: =SUM(...))
+                if (value.startsWith('=')) {
+                    // Formülü görmezden gel, 0 döndür
+                    return 0;
+                }
+                const cleaned = value.replace(/[^\d.-]/g, '');
+                return Number.parseFloat(cleaned) || 0;
+            }
+            return Number.parseFloat(value) || 0;
+        }
+
+        function processData(data) {
+            state.labels = [];
+            state.campaigns = [];
+            const labelsMap = {};
+            let indiaCampaignCount = 0;
+
+            // Başlıkları temizle ve kaydet
+            state.headers = (data[0] || []).map(header => 
+                header ? header.toString().trim() : ''
+            );
+            
+            // Başlık indekslerini bul
+            const headerIndices = {
+                campaignName: state.headers.findIndex(h => 
+                    h && h.toLowerCase().includes('campaign')),
+                labelName: state.headers.findIndex(h => 
+                    h && h.toLowerCase().includes('label')),
+                campCost: state.headers.findIndex(h => 
+                    h && h.toLowerCase().includes('cost') && h.toLowerCase().includes('camp')),
+                campConv: state.headers.findIndex(h => 
+                    h && h.toLowerCase().includes('conv') && h.toLowerCase().includes('camp')),
+                labelBudget: state.headers.findIndex(h => 
+                    h && h.toLowerCase().includes('budget') && h.toLowerCase().includes('label')),
+                labelCost: state.headers.findIndex(h => 
+                    h && h.toLowerCase().includes('cost') && h.toLowerCase().includes('label')),
+                labelConv: state.headers.findIndex(h => 
+                    h && h.toLowerCase().includes('conv') && h.toLowerCase().includes('label')),
+                labelKPI: state.headers.findIndex(h => 
+                    h && (h.toLowerCase().includes('kpi') || h.toLowerCase().includes('target')))
+            };
+
+            // Alternatif başlık arama
+            if (headerIndices.campaignName === -1) {
+                headerIndices.campaignName = state.headers.findIndex(h => h && h.toLowerCase().includes('name'));
+            }
+            if (headerIndices.labelName === -1) {
+                headerIndices.labelName = state.headers.findIndex(h => h && h.toLowerCase().includes('group'));
+            }
+
+            // Veri satırlarını işle
+            for (let i = 1; i < data.length; i++) {
+                const row = data[i];
+                if (row && row.length >= 3) {
+                    const campaignName = row[headerIndices.campaignName];
+                    const labelName = row[headerIndices.labelName];
+                    
+                    if (campaignName || labelName) {
+                        const campaignNameStr = campaignName ? campaignName.toString().trim() : '';
+                        const labelNameStr = labelName ? labelName.toString().trim() : '';
+                        
+                        const isIndia = campaignNameStr.toLowerCase().includes('india');
+                        
+                        if (isIndia) indiaCampaignCount++;
+
+                        // Kampanya verileri
+                        state.campaigns.push({
+                            label_name: labelNameStr,
+                            name: campaignNameStr,
+                            cost: extractNumber(row[headerIndices.campCost]),
+                            conversions: Math.max(0, extractNumber(row[headerIndices.campConv])),
+                            isIndia: isIndia,
+                            rowIndex: state.campaigns.length + 1,
+                            originalRow: [...row]
+                        });
+
+                        // Label verileri
+                        if (labelNameStr && labelsMap[labelNameStr] === undefined) {
+                            labelsMap[labelNameStr] = {
+                                name: labelNameStr,
+                                budget: Math.max(0, extractNumber(row[headerIndices.labelBudget])),
+                                cost: Math.max(0, extractNumber(row[headerIndices.labelCost])),
+                                conversions: Math.max(0, extractNumber(row[headerIndices.labelConv])),
+                                days_remaining: state.settings.daysRemaining,
+                                target_cpa: Math.max(0, extractNumber(row[headerIndices.labelKPI]))
+                            };
+                        }
+                    }
+                }
+            }
+
+            state.labels = Object.values(labelsMap);
+            
+            // İstatistikleri güncelle
+            updateFileInfo(indiaCampaignCount);
+            
+            // İşlem geçmişine ekle
+            addToHistory('Dosya işlendi', `${state.campaigns.length} kampanya, ${state.labels.length} label bulundu`);
+            
+            console.log('Veri işlendi:', {
+                labels: state.labels.length,
+                campaigns: state.campaigns.length,
+                indiaCount: indiaCampaignCount
+            });
+        }
+
+        // Dosya bilgilerini güncelle
+        function updateFileInfo(indiaCount = 0) {
+            elements.fileNameText.textContent = state.fileName;
+            elements.fileSizeText.textContent = formatFileSize(state.fileSize);
+            elements.labelsCountText.textContent = state.labels.length;
+            elements.campaignsCountText.textContent = state.campaigns.length;
+            elements.indiaCountText.textContent = indiaCount;
+            elements.progressFill.style.width = '100%';
+        }
+
+        // Optimizasyon helper fonksiyonları
+        function calculateIndiaTotalCost(indiaCampaigns) {
+            return indiaCampaigns.reduce((sum, c) => sum + c.cost, 0);
+        }
+
+        function calculateIndiaRatio(indiaTotalCost, labelBudget) {
+            return labelBudget > 0 ? (indiaTotalCost / labelBudget) * 100 : 0;
+        }
+
+        function calculateCurrentCPA(label) {
+            return label.conversions > 0 ? label.cost / label.conversions : 0;
+        }
+
+        function calculateNewDailyCPA(currentCPA, targetCPA) {
+            const cpaTolerance = state.settings.cpaTolerance / 100;
+            
+            // Hedef CPA ±%15 tolerans
+            if (currentCPA > targetCPA * (1 + cpaTolerance)) {
+                return targetCPA * (1 + cpaTolerance);
+            }
+            
+            if (currentCPA < targetCPA * (1 - cpaTolerance)) {
+                return targetCPA * (1 - cpaTolerance);
+            }
+            
+            return targetCPA;
+        }
+
+        function calculateLabelDailyBudget(label) {
+            const remainingBudget = label.budget - label.cost;
+            const budgetTolerance = state.settings.budgetTolerance / 100;
+            
+            // Label remaining budget: (Label budget - Label cost) / 15
+            const dailyBudgetFromRemaining = label.days_remaining > 0 ? remainingBudget / label.days_remaining : 0;
+            
+            // Bütçe tam kullanımı ±%15 tolerans
+            const expectedDailySpend = label.budget / 30;
+            const expectedCostSoFar = expectedDailySpend * (30 - label.days_remaining);
+            
+            if (label.cost < expectedCostSoFar * (1 - budgetTolerance)) {
+                // Az harcanmış, artır
+                return dailyBudgetFromRemaining * (1 + budgetTolerance);
+            } else if (label.cost > expectedCostSoFar * (1 + budgetTolerance)) {
+                // Çok harcanmış, azalt
+                return dailyBudgetFromRemaining * (1 - budgetTolerance);
+            }
+            
+            return dailyBudgetFromRemaining;
+        }
+
+        function calculateCampaignBudgets(labelDailyBudget, indiaCampaigns, nonIndiaCampaigns, 
+                                          indiaTotalCost, indiaRatio, labelBudget) {
+            const totalCampaigns = indiaCampaigns.length + nonIndiaCampaigns.length;
+            let indiaDailyBudget = 0;
+            let nonIndiaDailyBudget = 0;
+            const minBudget = state.settings.minBudget;
+            const indiaLimit = state.settings.indiaLimit / 100;
+            
+            if (indiaCampaigns.length > 0) {
+                // Hindistan oranı %30'u geçmiş mi?
+                if (indiaRatio > indiaLimit) {
+                    // Geçmişse, Hindistan kampanyalarına minimum bütçe (5 birim)
+                    indiaDailyBudget = minBudget;
+                    
+                    // Kalan bütçeyi diğer kampanyalara dağıt
+                    const remainingForOthers = Math.max(0, labelDailyBudget - (indiaDailyBudget * indiaCampaigns.length));
+                    nonIndiaDailyBudget = nonIndiaCampaigns.length > 0 ? 
+                        remainingForOthers / nonIndiaCampaigns.length : 0;
+                    
+                    // Eğer bütçe yetmiyorsa, Hindistan kampanyalarına eşit dağıt
+                    if (labelDailyBudget < indiaDailyBudget * indiaCampaigns.length) {
+                        indiaDailyBudget = labelDailyBudget / indiaCampaigns.length;
+                        nonIndiaDailyBudget = 0;
+                    }
+                } else {
+                    // Hindistan oranı %30'un altında
+                    const dailyPerCampaign = labelDailyBudget / totalCampaigns;
+                    indiaDailyBudget = dailyPerCampaign;
+                    nonIndiaDailyBudget = dailyPerCampaign;
+                    
+                    // Gelecekteki Hindistan oranını kontrol et
+                    const futureIndiaCost = indiaTotalCost + (indiaDailyBudget * indiaCampaigns.length * state.settings.days_remaining);
+                    const futureIndiaRatio = futureIndiaCost / labelBudget;
+                    
+                    if (futureIndiaRatio > indiaLimit) {
+                        // %30'u geçecek, sınırla
+                        const maxIndiaBudget = (labelBudget * indiaLimit - indiaTotalCost) / 
+                                               (indiaCampaigns.length * state.settings.days_remaining);
+                        indiaDailyBudget = Math.max(minBudget, maxIndiaBudget);
+                        
+                        const remainingForOthers = Math.max(0, labelDailyBudget - (indiaDailyBudget * indiaCampaigns.length));
+                        nonIndiaDailyBudget = nonIndiaCampaigns.length > 0 ? 
+                            remainingForOthers / nonIndiaCampaigns.length : 0;
+                    }
+                }
+            } else {
+                // Hindistan kampanyası yok
+                const dailyPerCampaign = labelDailyBudget / totalCampaigns;
+                nonIndiaDailyBudget = dailyPerCampaign;
+            }
+            
+            return { 
+                indiaDailyBudget: Math.max(0, Number.parseFloat(indiaDailyBudget.toFixed(2))),
+                nonIndiaDailyBudget: Math.max(0, Number.parseFloat(nonIndiaDailyBudget.toFixed(2)))
+            };
+        }
+
+        function createCampaignResults(labelCampaigns, indiaDailyBudget, nonIndiaDailyBudget, newDailyCPA) {
+            return labelCampaigns.map(campaign => {
+                const dailyBudget = campaign.isIndia ? indiaDailyBudget : nonIndiaDailyBudget;
+                const campaignCPA = campaign.conversions > 0 ? campaign.cost / campaign.conversions : 0;
+                
+                return {
+                    ...campaign,
+                    newDailyBudget: Math.max(0, Number.parseFloat(dailyBudget.toFixed(2))),
+                    newDailyCPA: Number.parseFloat(newDailyCPA.toFixed(2)),
+                    campaignCPA: Number.parseFloat(campaignCPA.toFixed(2))
+                };
+            });
+        }
+
+        function calculateTotalNewDailyBudget(campaignResults) {
+            return campaignResults.reduce((sum, c) => sum + c.newDailyBudget, 0);
+        }
+
+        // Optimizasyon algoritması
+        function calculateOptimization(label) {
+            const labelCampaigns = state.campaigns.filter(c => c.label_name === label.name);
+            
+            if (labelCampaigns.length > 0) {
+                const indiaCampaigns = labelCampaigns.filter(c => c.isIndia);
+                const nonIndiaCampaigns = labelCampaigns.filter(c => !c.isIndia);
+                
+                // Hindistan oranı
+                const indiaTotalCost = calculateIndiaTotalCost(indiaCampaigns);
+                const indiaRatio = calculateIndiaRatio(indiaTotalCost, label.budget);
+                
+                // Mevcut CPA
+                const currentCPA = calculateCurrentCPA(label);
+                
+                // Yeni CPA hedefi
+                const newDailyCPA = calculateNewDailyCPA(currentCPA, label.target_cpa);
+                
+                // Bütçe ayarlaması
+                const labelDailyBudget = calculateLabelDailyBudget(label);
+                
+                // Kampanya bütçeleri
+                const budgetResult = calculateCampaignBudgets(
+                    labelDailyBudget, 
+                    indiaCampaigns, 
+                    nonIndiaCampaigns, 
+                    indiaTotalCost, 
+                    indiaRatio, 
+                    label.budget
+                );
+                
+                // Kampanya sonuçları
+                const campaignResults = createCampaignResults(
+                    labelCampaigns, 
+                    budgetResult.indiaDailyBudget, 
+                    budgetResult.nonIndiaDailyBudget, 
+                    newDailyCPA
+                );
+                
+                return {
+                    label,
+                    indiaRatio: Number.parseFloat(indiaRatio.toFixed(2)),
+                    currentCPA: Number.parseFloat(currentCPA.toFixed(2)),
+                    newDailyCPA: Number.parseFloat(newDailyCPA.toFixed(2)),
+                    labelDailyBudget: Number.parseFloat(labelDailyBudget.toFixed(2)),
+                    campaignResults,
+                    totalNewDailyBudget: Number.parseFloat(calculateTotalNewDailyBudget(campaignResults).toFixed(2)),
+                    indiaCampaignsCount: indiaCampaigns.length,
+                    nonIndiaCampaignsCount: nonIndiaCampaigns.length
+                };
+            }
+            return null;
+        }
+
+        // Ana hesaplama fonksiyonu
+        function calculateAll() {
+            if (state.labels.length > 0) {
+                showLoading();
+                
+                try {
+                    console.log('Hesaplama başlıyor...');
+                    
+                    // Tüm label'lar için hesapla
+                    state.results = state.labels.map(label => calculateOptimization(label)).filter(r => r !== null);
+                    
+                    console.log('Hesaplama tamamlandı, sonuç sayısı:', state.results.length);
+                    
+                    // Genişletilmiş tablo verisini oluştur
+                    createExtendedTableData();
+                    
+                    // Sekmeyi değiştir
+                    switchTab('table');
+                    
+                    // Tabloyu göster
+                    renderExtendedTable();
+                    
+                    // Analiz sekmesini güncelle
+                    updateAnalysisTab();
+                    
+                    // İşlem geçmişine ekle
+                    addToHistory('Optimizasyon hesaplandı', `${state.results.length} label için hesaplama tamamlandı`);
+                    
+                } catch (error) {
+                    console.error('Hesaplama sırasında hata:', error);
+                    alert('Hesaplama sırasında hata oluştu: ' + error.message);
+                } finally {
+                    hideLoading();
+                }
+            } else {
+                alert('Hesaplama yapmak için önce bir dosya yükleyin.');
+            }
+        }
+
+        // Genişletilmiş tablo verisini oluştur
+        function createExtendedTableData() {
+            state.extendedTableData = JSON.parse(JSON.stringify(state.originalData));
+            
+            // Her kampanya için hesaplanan değerleri bul ve ekle
+            for (const result of state.results) {
+                result.campaignResults.forEach(campaign => {
+                    const rowIndex = campaign.rowIndex;
+                    if (state.extendedTableData[rowIndex]) {
+                        // Yeni sütunları ekle
+                        state.extendedTableData[rowIndex].push(campaign.newDailyBudget, campaign.newDailyCPA);
+                    }
+                });
+            }
+            
+            // Filtrelenmiş veriyi güncelle
+            state.filteredData = state.extendedTableData.slice(1);
+        }
+
+        // Genişletilmiş tabloyu render et
+        function renderExtendedTable() {
+            if (state.extendedTableData.length === 0) return;
+            
+            // Başlıkları oluştur
+            const headerRow = document.createElement('tr');
+            
+            // Orijinal başlıklar
+            state.headers.forEach(header => {
+                const th = document.createElement('th');
+                th.textContent = header || '';
+                th.title = header;
+                th.scope = 'col';
+                headerRow.appendChild(th);
+            });
+            
+            // Yeni başlıklar
+            const newHeaders = ['New Daily Budget', 'New Daily CPA'];
+            newHeaders.forEach(header => {
+                const th = document.createElement('th');
+                th.textContent = header;
+                th.style.backgroundColor = '#34A853';
+                th.style.color = 'white';
+                th.title = 'Hesaplanan değer';
+                th.scope = 'col';
+                headerRow.appendChild(th);
+            });
+            
+            elements.extendedTableHeader.innerHTML = '';
+            elements.extendedTableHeader.appendChild(headerRow);
+            
+            // Veri satırlarını oluştur
+            renderTableRows();
+            
+            // Tablo özetini güncelle
+            updateTableSummary();
+            
+            // Filtreleri güncelle
+            updateFilters();
+        }
+
+        // Tablo satırlarını render et
+        function renderTableRows() {
+            elements.extendedTableBody.innerHTML = '';
+            
+            const filteredRows = applyFilters(state.filteredData);
+            
+            filteredRows.forEach((rowData, rowIndex) => {
+                const row = document.createElement('tr');
+                
+                // Orijinal veriler
+                state.headers.forEach((header, colIndex) => {
+                    const td = document.createElement('td');
+                    let cellValue = rowData[colIndex];
+                    
+                    if (cellValue === undefined || cellValue === null) {
+                        cellValue = '';
+                    }
+                    
+                    // Sayısal formatlama
+                    const numValue = Number.parseFloat(cellValue);
+                    if (typeof cellValue === 'number' || !Number.isNaN(numValue)) {
+                        if (!Number.isNaN(numValue)) {
+                            td.textContent = formatNumber(numValue);
+                            td.style.textAlign = 'right';
+                        } else {
+                            td.textContent = cellValue;
+                        }
+                    } else {
+                        td.textContent = cellValue;
+                    }
+                    
+                    // Hindistan kampanyası kontrolü
+                    if (header && header.toLowerCase().includes('campaign') && 
+                        cellValue && cellValue.toString().toLowerCase().includes('india')) {
+                        row.classList.add('india-highlight');
+                        td.innerHTML = `${cellValue} <span style="color: #EA4335;">🇮🇳</span>`;
+                    }
+                    
+                    row.appendChild(td);
+                });
+                
+                // Yeni sütunlar
+                const newBudget = rowData[state.headers.length];
+                const newCPA = rowData[state.headers.length + 1];
+                
+                // New Daily Budget
+                const budgetCell = document.createElement('td');
+                budgetCell.className = 'new-column';
+                budgetCell.style.textAlign = 'right';
+                if (newBudget !== undefined && newBudget !== '') {
+                    budgetCell.textContent = formatNumber(newBudget);
+                    budgetCell.title = `Günlük bütçe: ${formatCurrency(newBudget)}`;
+                } else {
+                    budgetCell.textContent = '-';
+                }
+                row.appendChild(budgetCell);
+                
+                // New Daily CPA
+                const cpaCell = document.createElement('td');
+                cpaCell.className = 'new-column';
+                cpaCell.style.textAlign = 'right';
+                if (newCPA !== undefined && newCPA !== '') {
+                    cpaCell.textContent = formatNumber(newCPA);
+                    cpaCell.title = `Hedef CPA: ${formatCurrency(newCPA)}`;
+                    
+                    // CPA durumuna göre renklendir
+                    const campaignName = rowData[state.headers.findIndex(h => 
+                        h && h.toLowerCase().includes('campaign'))];
+                    const campaign = findCampaignByName(campaignName);
+                    if (campaign && campaign.campaignCPA > newCPA * 1.1) {
+                        cpaCell.style.backgroundColor = '#ffe6e6';
+                    }
+                } else {
+                    cpaCell.textContent = '-';
+                }
+                row.appendChild(cpaCell);
+                
+                elements.extendedTableBody.appendChild(row);
+            });
+            
+            // Tablo istatistiklerini güncelle
+            updateTableStats(filteredRows);
+        }
+
+        // Filtreleri uygula
+        function applyFilters(data) {
+            let filtered = [...data];
+            
+            // Arama filtresi
+            const searchTerm = elements.searchInput.value.toLowerCase();
+            if (searchTerm.trim().length > 0) {
+                const campaignIndex = state.headers.findIndex(h => 
+                    h && h.toLowerCase().includes('campaign'));
+                filtered = filtered.filter(row => 
+                    row[campaignIndex] && 
+                    row[campaignIndex].toString().toLowerCase().includes(searchTerm)
+                );
+            }
+            
+            // Label filtresi
+            const labelFilter = elements.labelFilter.value;
+            if (labelFilter.trim().length > 0) {
+                const labelIndex = state.headers.findIndex(h => 
+                    h && h.toLowerCase().includes('label'));
+                filtered = filtered.filter(row => 
+                    row[labelIndex] && 
+                    row[labelIndex].toString() === labelFilter
+                );
+            }
+            
+            // Hindistan filtresi
+            const indiaFilter = elements.indiaFilter.value;
+            if (indiaFilter.trim().length > 0) {
+                const campaignIndex = state.headers.findIndex(h => 
+                    h && h.toLowerCase().includes('campaign'));
+                filtered = filtered.filter(row => {
+                    const isIndia = row[campaignIndex] && 
+                                   row[campaignIndex].toString().toLowerCase().includes('india');
+                    return indiaFilter === 'true' ? isIndia : !isIndia;
+                });
+            }
+            
+            return filtered;
+        }
+
+        // Tablo özetini güncelle
+        function updateTableSummary() {
+            const totalRows = state.filteredData.length;
+            const indiaRows = state.filteredData.filter(row => {
+                const campaignIndex = state.headers.findIndex(h => 
+                    h && h.toLowerCase().includes('campaign'));
+                return row[campaignIndex] && 
+                       row[campaignIndex].toString().toLowerCase().includes('india');
+            }).length;
+            
+            // Toplam yeni bütçe
+            const totalNewBudget = state.filteredData.reduce((sum, row) => {
+                const budget = row[state.headers.length];
+                return sum + (budget || 0);
+            }, 0);
+            
+            elements.tableSummary.innerHTML = `
+                <div class="summary-card">
+                    <h4>Toplam Satır</h4>
+                    <div class="summary-value">${totalRows}</div>
+                    <div class="summary-label">Filtrelenmiş kayıt sayısı</div>
+                </div>
+                <div class="summary-card">
+                    <h4>Hindistan</h4>
+                    <div class="summary-value">${indiaRows}</div>
+                    <div class="summary-label">Hindistan kampanyası</div>
+                </div>
+                <div class="summary-card">
+                    <h4>Toplam Bütçe</h4>
+                    <div class="summary-value">${formatNumber(totalNewBudget)}</div>
+                    <div class="summary-label">Günlük toplam bütçe</div>
+                </div>
+                <div class="summary-card">
+                    <h4>Label Sayısı</h4>
+                    <div class="summary-value">${state.labels.length}</div>
+                    <div class="summary-label">Toplam label</div>
+                </div>
+            `;
+        }
+
+        // Tablo istatistiklerini güncelle
+        function updateTableStats(filteredRows) {
+            if (filteredRows.length === 0) {
+                elements.tableStats.innerHTML = '<div class="alert alert-warning">Filtre sonucu kayıt bulunamadı.</div>';
+                return;
+            }
+            
+            // İstatistikleri hesapla
+            const budgets = filteredRows.map(row => row[state.headers.length] || 0);
+            const cpas = filteredRows.map(row => row[state.headers.length + 1] || 0);
+            
+            const avgBudget = budgets.reduce((a, b) => a + b, 0) / budgets.length;
+            const avgCPA = cpas.reduce((a, b) => a + b, 0) / cpas.length;
+            const maxBudget = Math.max(...budgets);
+            const minBudget = Math.min(...budgets.filter(b => b > 0));
+            
+            elements.tableStats.innerHTML = `
+                <div class="result-box">
+                    <h3>Ortalama Bütçe</h3>
+                    <div class="result-value">${formatNumber(avgBudget)}</div>
+                    <div class="result-label">Günlük ortalama bütçe</div>
+                </div>
+                <div class="result-box">
+                    <h3>Ortalama CPA</h3>
+                    <div class="result-value">${formatNumber(avgCPA)}</div>
+                    <div class="result-label">Hedef CPA ortalaması</div>
+                </div>
+                <div class="result-box">
+                    <h3>Max Bütçe</h3>
+                    <div class="result-value">${formatNumber(maxBudget)}</div>
+                    <div class="result-label">En yüksek günlük bütçe</div>
+                </div>
+                <div class="result-box">
+                    <h3>Min Bütçe</h3>
+                    <div class="result-value">${formatNumber(minBudget)}</div>
+                    <div class="result-label">En düşük günlük bütçe</div>
+                </div>
+            `;
+        }
+
+        // Analiz sekmesini güncelle
+        function updateAnalysisTab() {
+            if (state.results.length === 0) {
+                elements.analysisResults.innerHTML = '<div class="alert alert-warning">Henüz hesaplama yapılmadı.</div>';
+                return;
+            }
+            
+            let html = '';
+            
+            state.results.forEach((result) => {
+                const label = result.label;
+                const budgetUsage = label.budget > 0 ? (label.cost / label.budget) * 100 : 0;
+                const cpaStatus = getCPAStatus(result.currentCPA, label.target_cpa);
+                const budgetStatus = getBudgetStatus(budgetUsage);
+                const indiaStatus = result.indiaRatio > state.settings.indiaLimit ? 'danger' : 'optimal';
+                
+                html += `
+                    <div class="label-result">
+                        <div class="label-header">
+                            <div class="label-name">${label.name}</div>
+                            <div class="label-stats">
+                                <div class="stat-item">
+                                    <div class="stat-value">${result.campaignResults.length}</div>
+                                    <div class="stat-label">Kampanya</div>
+                                </div>
+                                <div class="stat-item">
+                                    <div class="stat-value">${result.indiaCampaignsCount}</div>
+                                    <div class="stat-label">Hindistan</div>
+                                </div>
+                                <div class="stat-item">
+                                    <div class="stat-value" style="color: ${getStatusColor(indiaStatus)}">
+                                        ${result.indiaRatio.toFixed(1)}%
+                                    </div>
+                                    <div class="stat-label">Hindistan Oranı</div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="results-container">
+                            <div class="result-box">
+                                <h3>Bütçe Kullanımı</h3>
+                                <div class="result-value" style="color: ${getStatusColor(budgetStatus)}">
+                                    ${budgetUsage.toFixed(1)}%
+                                </div>
+                                <div class="result-label">Harcanan: ${formatNumber(label.cost)} / ${formatNumber(label.budget)}</div>
+                            </div>
+                            
+                            <div class="result-box">
+                                <h3>Mevcut CPA</h3>
+                                <div class="result-value" style="color: ${getStatusColor(cpaStatus)}">
+                                    ${formatNumber(result.currentCPA)}
+                                </div>
+                                <div class="result-label">Hedef: ${formatNumber(label.target_cpa)}</div>
+                            </div>
+                            
+                            <div class="result-box">
+                                <h3>Yeni Günlük CPA</h3>
+                                <div class="result-value">${formatNumber(result.newDailyCPA)}</div>
+                                <div class="result-label">Güncellenmiş hedef</div>
+                            </div>
+                            
+                            <div class="result-box">
+                                <h3>Label Günlük Bütçe</h3>
+                                <div class="result-value">${formatNumber(result.labelDailyBudget)}</div>
+                                <div class="result-label">Kalan gün: ${label.days_remaining}</div>
+                            </div>
+                        </div>
+                        
+                        ${elements.detailedViewToggle.checked ? `
+                            <div class="table-container" style="margin-top: 15px;">
+                                <table>
+                                    <caption class="sr-only">${label.name} label için kampanya detayları</caption>
+                                    <thead>
+                                        <tr>
+                                            <th scope="col">Kampanya</th>
+                                            <th scope="col">Maliyet</th>
+                                            <th scope="col">Dönüşüm</th>
+                                            <th scope="col">CPA</th>
+                                            <th scope="col">Yeni Bütçe</th>
+                                            <th scope="col">Durum</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        ${result.campaignResults.map(campaign => `
+                                            <tr ${campaign.isIndia ? 'class="india-highlight"' : ''}>
+                                                <td>${campaign.name} ${campaign.isIndia ? '🇮🇳' : ''}</td>
+                                                <td>${formatNumber(campaign.cost)}</td>
+                                                <td>${campaign.conversions}</td>
+                                                <td>${formatNumber(campaign.campaignCPA)}</td>
+                                                <td class="new-column">${formatNumber(campaign.newDailyBudget)}</td>
+                                                <td>
+                                                    <span class="status-indicator ${campaign.campaignCPA > campaign.newDailyCPA ? 'warning' : 'success'}"></span>
+                                                    ${campaign.campaignCPA > campaign.newDailyCPA ? 'Yüksek' : 'Optimal'}
+                                                </td>
+                                            </tr>
+                                        `).join('')}
+                                    </tbody>
+                                </table>
+                            </div>
+                        ` : ''}
+                    </div>
+                `;
+            });
+            
+            elements.analysisResults.innerHTML = html;
+        }
+
+        // Kampanya adına göre kampanya bul
+        function findCampaignByName(name) {
+            for (const result of state.results) {
+                const campaign = result.campaignResults.find(c => c.name === name);
+                if (campaign) return campaign;
+            }
+            return null;
+        }
+
+        // Filtreleri güncelle
+        function updateFilters() {
+            // Label filtrelerini güncelle
+            elements.labelFilter.innerHTML = '<option value="">Tümü</option>';
+            const labels = [...new Set(state.campaigns.map(c => c.label_name).filter(Boolean))];
+            labels.forEach(label => {
+                const option = document.createElement('option');
+                option.value = label;
+                option.textContent = label;
+                elements.labelFilter.appendChild(option);
+            });
+        }
+
+        // İşlem geçmişine ekle
+        function addToHistory(action, details) {
+            const timestamp = new Date().toLocaleTimeString('tr-TR');
+            state.processHistory.unshift({
+                timestamp,
+                action,
+                details
+            });
+            
+            // Geçmişi göster (son 10)
+            const recentHistory = state.processHistory.slice(0, 10);
+            elements.processHistory.innerHTML = recentHistory.map(item => `
+                <div style="margin-bottom: 8px; padding-bottom: 8px; border-bottom: 1px solid #eee;">
+                    <strong>${item.timestamp}</strong>: ${item.action}<br>
+                    <small style="color: #666;">${item.details}</small>
+                </div>
+            `).join('');
+        }
+
+        // Sekme değiştirme
+        function switchTab(tabName) {
+            state.currentTab = tabName;
+            
+            // Sekmeleri güncelle
+            elements.tabs.forEach(tab => {
+                if (tab.dataset.tab === tabName) {
+                    tab.classList.add('active');
+                } else {
+                    tab.classList.remove('active');
+                }
+            });
+            
+            // İçerikleri güncelle
+            elements.tabContents.forEach(content => {
+                if (content.id === tabName) {
+                    content.classList.add('active');
+                } else {
+                    content.classList.remove('active');
+                }
+            });
+        }
+
+        // Yükleme göster
+        function showLoading() {
+            elements.loadingSection.classList.remove('hidden');
+            let progress = 0;
+            const interval = setInterval(() => {
+                progress += 10;
+                elements.loadingProgress.style.width = `${Math.min(progress, 90)}%`;
+                if (progress >= 90) clearInterval(interval);
+            }, 200);
+        }
+
+        // Yükleme gizle
+        function hideLoading() {
+            elements.loadingProgress.style.width = '100%';
+            setTimeout(() => {
+                elements.loadingSection.classList.add('hidden');
+                elements.loadingProgress.style.width = '30%';
+            }, 500);
+        }
+
+        // Dosya indirme
+        function downloadExtendedTable() {
+            if (state.extendedTableData.length === 0) {
+                alert('İndirilecek veri bulunamadı.');
+                return;
+            }
+            
+            try {
+                // Orijinal başlıklar
+                const originalHeaders = state.headers;
+                const extendedHeaders = [...originalHeaders, 'New Daily Budget', 'New Daily CPA'];
+                
+                // CSV oluştur
+                let csvContent = "data:text/csv;charset=utf-8,";
+                csvContent += extendedHeaders.map(h => `"${h}"`).join(",") + "\n";
+                
+                // Veri satırları
+                for (let i = 1; i < state.extendedTableData.length; i++) {
+                    const row = state.extendedTableData[i];
+                    if (row) {
+                        const extendedRow = [...row];
+                        while (extendedRow.length < extendedHeaders.length) {
+                            extendedRow.push('');
+                        }
+                        
+                        csvContent += extendedRow.map(cell => {
+                            if (cell === null || cell === undefined) return '""';
+                            return `"${cell}"`;
+                        }).join(",") + "\n";
+                    }
+                }
+                
+                const encodedUri = encodeURI(csvContent);
+                const link = document.createElement("a");
+                link.setAttribute("href", encodedUri);
+                const fileName = state.fileName.replace(/\.[^/.]+$/, "") || "optimized_table";
+                link.setAttribute("download", `${fileName}_optimized_${new Date().toISOString().slice(0,10)}.csv`);
+                document.body.appendChild(link);
+                link.click();
+                link.remove();
+                
+                addToHistory('Tablo indirildi', 'CSV formatında indirildi');
+                
+            } catch (error) {
+                console.error('İndirme hatası:', error);
+                alert('Dosya indirilirken hata oluştu: ' + error.message);
+            }
+        }
+
+        // Excel olarak kaydet
+        function exportToExcel() {
+            if (state.extendedTableData.length === 0) {
+                alert('Dışa aktarılacak veri bulunamadı.');
+                return;
+            }
+            
+            try {
+                // Orijinal başlıklar
+                const originalHeaders = state.headers;
+                const extendedHeaders = [...originalHeaders, 'New Daily Budget', 'New Daily CPA'];
+                
+                // Çalışma kitabı oluştur
+                const wb = XLSX.utils.book_new();
+                const wsData = [extendedHeaders];
+                
+                // Veri satırları
+                for (let i = 1; i < state.extendedTableData.length; i++) {
+                    const row = state.extendedTableData[i];
+                    if (row) {
+                        const extendedRow = [...row];
+                        while (extendedRow.length < extendedHeaders.length) {
+                            extendedRow.push('');
+                        }
+                        wsData.push(extendedRow);
+                    }
+                }
+                
+                const ws = XLSX.utils.aoa_to_sheet(wsData);
+                XLSX.utils.book_append_sheet(wb, ws, "Optimized Data");
+                
+                // Dosyayı indir
+                const fileName = state.fileName.replace(/\.[^/.]+$/, "") || "optimized_table";
+                XLSX.writeFile(wb, `${fileName}_optimized.xlsx`);
+                
+                addToHistory('Excel dosyası oluşturuldu', 'XLSX formatında kaydedildi');
+                
+            } catch (error) {
+                console.error('Excel export hatası:', error);
+                alert('Excel dosyası oluşturulurken hata oluştu: ' + error.message);
+            }
+        }
+
+        // Orijinal formatta indir
+        function exportToOriginalFormat() {
+            if (state.extendedTableData.length === 0) {
+                alert('Dışa aktarılacak veri bulunamadı.');
+                return;
+            }
+            
+            try {
+                // Orijinal başlıkları koru ve yeni sütunları ekle
+                const originalHeaders = state.headers;
+                
+                // Yeni Excel dosyası oluştur
+                const wb = XLSX.utils.book_new();
+                
+                // Tüm sayfaları işle
+                const sheetData = [];
+                
+                // Başlık satırı
+                const headerRow = [...originalHeaders, 'New Daily Budget', 'New Daily CPA'];
+                sheetData.push(headerRow);
+                
+                // Veri satırları
+                for (let i = 1; i < state.extendedTableData.length; i++) {
+                    const row = [];
+                    const originalRow = state.originalData[i] || [];
+                    const extendedRow = state.extendedTableData[i] || [];
+                    
+                    // Orijinal sütunlar
+                    originalHeaders.forEach((header, index) => {
+                        row.push(originalRow[index] !== undefined ? originalRow[index] : '');
+                    });
+                    
+                    // Yeni sütunlar
+                    row.push(extendedRow[originalHeaders.length] || '');
+                    row.push(extendedRow[originalHeaders.length + 1] || '');
+                    
+                    sheetData.push(row);
+                }
+                
+                const ws = XLSX.utils.aoa_to_sheet(sheetData);
+                
+                // Formatlamalar ekle
+                if (sheetData.length > 0) {
+                    const range = XLSX.utils.decode_range(ws['!ref']);
+                    
+                    // New Daily Budget sütunu
+                    const newBudgetCol = originalHeaders.length;
+                    
+                    // New Daily CPA sütunu
+                    const newCPACol = originalHeaders.length + 1;
+                    
+                    // Her satır için
+                    for (let R = 1; R <= range.e.r; R++) {
+                        // New Daily Budget hücresi
+                        const budgetCell = XLSX.utils.encode_cell({r: R, c: newBudgetCol});
+                        if (!ws[budgetCell]) ws[budgetCell] = {};
+                        ws[budgetCell].s = {
+                            fill: {fgColor: {rgb: "C6EFCE"}},
+                            font: {bold: true}
+                        };
+                        
+                        // New Daily CPA hücresi
+                        const cpaCell = XLSX.utils.encode_cell({r: R, c: newCPACol});
+                        if (!ws[cpaCell]) ws[cpaCell] = {};
+                        ws[cpaCell].s = {
+                            fill: {fgColor: {rgb: "FFEB9C"}},
+                            font: {bold: true}
+                        };
+                    }
+                }
+                
+                XLSX.utils.book_append_sheet(wb, ws, "Optimized");
+                
+                // Dosyayı indir
+                const fileName = state.fileName.replace(/\.[^/.]+$/, "") || "optimized_table";
+                XLSX.writeFile(wb, `${fileName}_with_new_columns.xlsx`);
+                
+                addToHistory('Excel dosyası oluşturuldu', 'Yeni sütunlar eklendi');
+                
+            } catch (error) {
+                console.error('Excel export hatası:', error);
+                alert('Excel dosyası oluşturulurken hata oluştu: ' + error.message);
+            }
+        }
+
+        // Dosya seçim fonksiyonu
+        function handleFileSelect() {
+            const file = elements.fileInput.files[0];
+            
+            if (file) {
+                resetState();
+                
+                state.fileName = file.name;
+                state.fileSize = file.size;
+                
+                elements.fileInfo.style.display = 'block';
+                elements.progressFill.style.width = '30%';
+                
+                showLoading();
+                
+                // Hata durumunda yükleme ekranının kapanmasını sağla
+                setTimeout(() => {
+                    readFile(file).catch(error => {
+                        console.error('Dosya işleme hatası:', error);
+                        alert('Dosya işlenirken hata oluştu: ' + error.message);
+                        hideLoading();
+                    });
+                }, 100);
+            }
+        }
+
+        // Dosya okuma işlemi
+        async function readFile(file) {
+            try {
+                console.log('Dosya okunuyor:', file.name, 'Boyut:', file.size);
+                
+                let data;
+                const isCSV = file.name.toLowerCase().endsWith('.csv');
+                const isExcel = file.name.toLowerCase().endsWith('.xlsx') || file.name.toLowerCase().endsWith('.xls');
+                
+                if (isCSV) {
+                    console.log('CSV dosyası işleniyor...');
+                    const content = await file.text();
+                    const lines = content.split('\n');
+                    data = lines.map(line => parseCSVLine(line));
+                    console.log('CSV satır sayısı:', data.length);
+                } else if (isExcel) {
+                    console.log('Excel dosyası işleniyor...');
+                    data = await readExcelFile(file);
+                    console.log('Excel satır sayısı:', data.length);
+                } else {
+                    throw new Error('Desteklenmeyen dosya formatı');
+                }
+                
+                if (!data || data.length < 2) {
+                    throw new Error('Dosya boş veya yetersiz veri içeriyor');
+                }
+                
+                console.log('İlk satır (başlıklar):', data[0]);
+                console.log('İkinci satır (ilk veri):', data[1]);
+                
+                state.originalData = data;
+                state.headers = data[0] || [];
+                
+                // Veriyi işle
+                processData(data);
+                
+                // Butonları aktif et
+                elements.calculateBtn.disabled = false;
+                elements.previewBtn.disabled = false;
+                
+                // Önizleme göster
+                showPreview();
+                
+                hideLoading();
+                
+                // Başarı mesajı
+                addToHistory('Dosya başarıyla yüklendi', `${state.campaigns.length} kampanya işlendi`);
+                
+            } catch (error) {
+                console.error('Dosya okuma hatası:', error);
+                alert('Dosya okunurken hata oluştu: ' + error.message);
+                resetState();
+                hideLoading();
+            }
+        }
+
+        // Excel dosyasını okuma
+        async function readExcelFile(file) {
+            try {
+                return new Promise((resolve, reject) => {
+                    const reader = new FileReader();
+                    
+                    reader.onload = function(e) {
+                        try {
+                            const data = new Uint8Array(e.target.result);
+                            const workbook = XLSX.read(data, { type: 'array' });
+                            
+                            // İlk sayfayı al
+                            const firstSheetName = workbook.SheetNames[0];
+                            const worksheet = workbook.Sheets[firstSheetName];
+                            
+                            // Veriyi dizi formatında al
+                            const jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1, defval: '' });
+                            resolve(jsonData);
+                        } catch (error) {
+                            reject(error);
+                        }
+                    };
+                    
+                    reader.onerror = function(e) {
+                        reject(new Error('Dosya okunamadı'));
+                    };
+                    
+                    reader.readAsArrayBuffer(file);
+                });
+            } catch (error) {
+                console.error('Excel okuma hatası:', error);
+                throw new Error(`Excel dosyası okunamadı: ${error.message}`);
+            }
+        }
+
+        // Önizleme göster
+        function showPreview() {
+            if (state.originalData.length > 0) {
+                elements.extendedTableHeader.innerHTML = '';
+                elements.extendedTableBody.innerHTML = '';
+                
+                // Başlık satırı
+                const headerRow = document.createElement('tr');
+                state.headers.forEach(header => {
+                    const th = document.createElement('th');
+                    th.textContent = header || '';
+                    th.scope = 'col';
+                    headerRow.appendChild(th);
+                });
+                elements.extendedTableHeader.appendChild(headerRow);
+                
+                // İlk 10 satırı göster
+                const previewRows = state.originalData.slice(1, 11);
+                previewRows.forEach(rowData => {
+                    const row = document.createElement('tr');
+                    state.headers.forEach((header, index) => {
+                        const td = document.createElement('td');
+                        td.textContent = rowData[index] !== undefined ? rowData[index] : '';
+                        row.appendChild(td);
+                    });
+                    elements.extendedTableBody.appendChild(row);
+                });
+                
+                // Tablo özeti
+                elements.tableSummary.innerHTML = `
+                    <div class="summary-card">
+                        <h4>Önizleme</h4>
+                        <div class="summary-value">${previewRows.length} satır</div>
+                        <div class="summary-label">İlk 10 satır gösteriliyor</div>
+                    </div>
+                `;
+                
+                // Tabloyu göster
+                switchTab('table');
+            }
+        }
+
+        // Durumu sıfırla
+        function resetState() {
+            state.originalData = [];
+            state.headers = [];
+            state.labels = [];
+            state.campaigns = [];
+            state.results = [];
+            state.fileName = '';
+            state.fileSize = 0;
+            state.extendedTableData = [];
+            state.filteredData = [];
+            
+            elements.fileInfo.style.display = 'none';
+            elements.calculateBtn.disabled = true;
+            elements.previewBtn.disabled = true;
+            elements.extendedTableHeader.innerHTML = '';
+            elements.extendedTableBody.innerHTML = '';
+            elements.tableSummary.innerHTML = '';
+            elements.tableStats.innerHTML = '';
+            elements.analysisResults.innerHTML = '';
+            
+            switchTab('upload');
+        }
+
+        // Olay dinleyicilerini kur
+        function setupEventListeners() {
+            // Sekme değiştirme
+            elements.tabs.forEach(tab => {
+                tab.addEventListener('click', () => switchTab(tab.dataset.tab));
+            });
+            
+            // Dosya yükleme
+            elements.selectFileBtn.addEventListener('click', () => elements.fileInput.click());
+            elements.fileUploadArea.addEventListener('click', () => elements.fileInput.click());
+            elements.fileInput.addEventListener('change', handleFileSelect);
+            
+            // Butonlar
+            elements.calculateBtn.addEventListener('click', calculateAll);
+            elements.previewBtn.addEventListener('click', showPreview);
+            elements.resetBtn.addEventListener('click', () => {
+                if (confirm('Tüm verileri sıfırlamak istediğinize emin misiniz?')) {
+                    resetState();
+                    elements.fileInput.value = '';
+                }
+            });
+            elements.downloadBtn.addEventListener('click', downloadExtendedTable);
+            elements.exportExcelBtn.addEventListener('click', exportToExcel);
+            elements.exportOriginalFormatBtn.addEventListener('click', exportToOriginalFormat);
+            elements.clearTableBtn.addEventListener('click', () => {
+                elements.extendedTableBody.innerHTML = '';
+                elements.tableSummary.innerHTML = '';
+                elements.tableStats.innerHTML = '';
+            });
+            
+            // Analiz
+            elements.detailedViewToggle.addEventListener('change', updateAnalysisTab);
+            
+            // Filtreler
+            elements.searchInput.addEventListener('input', () => renderTableRows());
+            elements.labelFilter.addEventListener('change', () => renderTableRows());
+            elements.indiaFilter.addEventListener('change', () => renderTableRows());
+            
+            // Sürükle-bırak
+            elements.fileUploadArea.addEventListener('dragover', handleDragOver);
+            elements.fileUploadArea.addEventListener('drop', handleFileDrop);
+        }
+
+        // Dosya sürükleme
+        function handleDragOver(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            elements.fileUploadArea.style.borderColor = '#4285F4';
+            elements.fileUploadArea.style.backgroundColor = '#f0f7ff';
+        }
+
+        function handleFileDrop(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            elements.fileUploadArea.style.borderColor = '#ccc';
+            elements.fileUploadArea.style.backgroundColor = '';
+            
+            if (e.dataTransfer.files.length > 0) {
+                elements.fileInput.files = e.dataTransfer.files;
+                handleFileSelect();
+            }
+        }
+
+        // Sayfa yüklendiğinde
+        document.addEventListener('DOMContentLoaded', () => {
+            setupEventListeners();
+            
+            // İlk mesaj
+            addToHistory('Uygulama başlatıldı', 'Google Ads Optimizasyon aracı hazır');
+        });
+    </script>
+</body>
+</html>
